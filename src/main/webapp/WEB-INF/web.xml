@@ -8,4 +8,7 @@
 <servlet-name>FrontControllerServlet</servlet-name>
 <url-pattern>/url/*</url-pattern>
 </servlet-mapping>
+<listener>
+<listener-class>main.java.utils.AppListener</listener-class>
+</listener>
 </web-app>
