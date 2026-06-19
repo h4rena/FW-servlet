@@ -5,7 +5,17 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.ServletException;
 
+import main.java.utils.scanController;
+
 public class FrontControllerServlet extends HttpServlet {
+
+   public void init() throws ServletException {
+    try {
+        new scanController().scanControllers("main.java.controllers");
+    } catch (Exception e) {
+        throw new ServletException(e);
+      }  
+   }
 
    public void processRequest(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
     String URL = req.getPathInfo();

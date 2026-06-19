@@ -2,8 +2,8 @@
 
 # Définition des variables
 APP_NAME="FW"
-SRC_DIR="/home/hatsugoki/Web-dyn/FW/src/main/java"
-WEB_DIR="/home/hatsugoki/Web-dyn/FW/src/main/webapp"
+SRC_DIR="/home/hatsugoki/Web-dyn/Framework-servlet/src/main/java"
+WEB_DIR="/home/hatsugoki/Web-dyn/Framework-servlet/src/main/webapp"
 BUILD_DIR="build"
 LIB_DIR="lib"
 TOMCAT_WEBAPPS="/home/hatsugoki/tomcat/apache-tomcat-10.0.16/webapps"
