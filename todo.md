@@ -29,13 +29,13 @@ Creer la classe annotation Contoller
 Dans test
 Creer une classe TestContoller, annote 
 
-But : les Classe qu'on a déclaré Contoller : on peut connaître oe ces clases la sont des controllers dans dans le framework 
+But : les Classe qu'on a déclaré Contoller : on peut connaître oe ces classes la sont des controllers  dans le framework 
 
 
 Mila manana code tsika oe :
 - Soit au démarrage anle application Web no executé le izy ( mapiasa Listener afahana miaino événements) (na mbola tsy misy application miditra)
-- na au premier appel anle FrontServlet (mapiasa init(). L
-- Le code : But : Mila fantatra oe inn avy ny cotroller rehetra
+- na au premier appel anle FrontServlet (mapiasa init())
+- Le code : But : Mila fantatra oe inn avy ny controller rehetra
 Comment : Ao anatinle FrontServlet : 
 Asina Attribut 1 : List<Contoller> 
 
@@ -43,7 +43,7 @@ Asina Attribut 1 : List<Contoller>
 - Refa mitafy ny Controller rehetra izy de Alainy daoly ny Classes reetra ao amle Classpath , fa ny mety omena ny  packages misy anle controllers 
 
 Yap time:
-(Ny framework samy manana ny mode de fonctionnement any 
+Ny framework samy manana ny mode de fonctionnement any 
 
 
 Aveo printena dool fotsn
