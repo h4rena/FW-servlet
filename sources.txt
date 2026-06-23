@@ -1,6 +1,7 @@
+/home/hatsugoki/Web-dyn/Framework-servlet/src/main/java/controllers/TestController.java
 /home/hatsugoki/Web-dyn/Framework-servlet/src/main/java/Main.java
 /home/hatsugoki/Web-dyn/Framework-servlet/src/main/java/utils/scanController.java
 /home/hatsugoki/Web-dyn/Framework-servlet/src/main/java/utils/AppListener.java
 /home/hatsugoki/Web-dyn/Framework-servlet/src/main/java/tacos/FrontControllerServlet.java
 /home/hatsugoki/Web-dyn/Framework-servlet/src/main/java/annotation/FWController.java
-/home/hatsugoki/Web-dyn/Framework-servlet/src/main/java/annotation/FWRoute.java
+/home/hatsugoki/Web-dyn/Framework-servlet/src/main/java/annotation/UrlMapping.java

@@ -70,3 +70,34 @@ Listener miaino events fotsn ny ataony :
 Mila declarena ao anaty web.xml ko le listener ( otran le servlet iany ) 
 
 De micreer Classe 1 déclenché au moment du listener
+
+## S2
+
+But : Refa misy lien de fantatra oe iza ny controller mifanaraka amn iny 
+
+A afficher : /emp/list : dans Contoller (EmpContoller) de List() no methode associe aminy 
+
+1- Afficherna daoly fotns lo le liens valides reetra 
+2- Aveo amzay refa mi taper lien de tokony tenenina raha efa defini ve le lien sa tsy de affichena le Controller sy method miaraka aminy
+Raha tsy ita le lien : Apseo daoly oe inn ny liens supportés miaraka amle Cotroller sy Méthode associe 
+
+Fa raha ohatra oe /emp/list ohatra ny supporté, ka /emp/new no nataoko de tsy apseo daoly ny liens reetra fa /emp/new iany no apseo miaraka am infos any
+
+
+Comment :
+
+- Creer une annotation de type methode 
+
+Aty am Test : 
+Misy Contoller ex : EmpContoller annote Contoller
+
+De misy 
+Fonction Liste() annote  ohtr : UrlMapping("/emp/list") 
+
+tohinyS2:
+mampiasa map pour url unique 
+
+S3
+      
+
+S3 bis
