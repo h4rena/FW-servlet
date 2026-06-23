@@ -1,11 +1,15 @@
 package main.java.utils;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import main.java.annotation.FWController;
+import main.java.annotation.UrlMapping;
 
 public class scanController {
 
@@ -41,4 +45,15 @@ public class scanController {
     controllerNames = found;
     return found;
    }
+
+   public static Map<String, Method> getUrlMappings(Class<?> controllerClass) {
+    Map<String, Method> mappings = new HashMap<>();
+    for (Method method : controllerClass.getDeclaredMethods()) {
+        UrlMapping mapping = method.getAnnotation(UrlMapping.class);
+        if (mapping != null) {
+            mappings.put(mapping.value(), method);
+                }
+            }
+    return mappings;
+    }
 }
