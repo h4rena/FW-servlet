@@ -96,11 +96,15 @@ public class FrontControllerServlet extends HttpServlet {
 
             try {
                 Object controller = controllerInstances.get(method.getDeclaringClass().getName());
+
                 Object result = method.invoke(controller);
-                out.println("<p>" + "method invoque : " + result + "</p>");
+
+                out.println("method invoque : " + "<p>" + result + "</p>");
+
             } catch (Exception e) {
                 throw new ServletException("Erreur invocation de " + method.getName(), e);
             }
+            
         } else {
             res.setContentType("text/html;charset=UTF-8");
             PrintWriter out = res.getWriter();
