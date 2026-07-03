@@ -98,6 +98,23 @@ tohinyS2:
 mampiasa map pour url unique 
 
 S3
-      
+class urlMethod      
+pour distinguer une url a partir de la methode ("GET","POST")
+UrlMethod u1=new Urlmethod()
+u1.seturl("/list")
+u1.setMethod("GET")
+map.put(u1)
+
+UrlMethod u2=new Urlmethod()
+u2.seturl("/list")
+u2.setMethod("POST")
+map.put(u2)
+
+mampiasa equals... (redefinition)
+
 
 S3 bis
+invoke avec reflect ce que la methodfait
+
+S4
+alaina any am ilay navita context applistener

@@ -2,6 +2,7 @@
 /home/hatsugoki/Web-dyn/Framework-servlet/src/main/java/Main.java
 /home/hatsugoki/Web-dyn/Framework-servlet/src/main/java/utils/scanController.java
 /home/hatsugoki/Web-dyn/Framework-servlet/src/main/java/utils/AppListener.java
+/home/hatsugoki/Web-dyn/Framework-servlet/src/main/java/model/UrlMethod.java
 /home/hatsugoki/Web-dyn/Framework-servlet/src/main/java/tacos/FrontControllerServlet.java
 /home/hatsugoki/Web-dyn/Framework-servlet/src/main/java/annotation/FWController.java
 /home/hatsugoki/Web-dyn/Framework-servlet/src/main/java/annotation/UrlMapping.java
