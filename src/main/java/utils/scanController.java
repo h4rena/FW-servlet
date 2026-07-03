@@ -10,6 +10,7 @@ import java.util.Map;
 
 import main.java.annotation.FWController;
 import main.java.annotation.UrlMapping;
+import main.java.model.UrlMethod;
 
 public class scanController {
 
@@ -46,12 +47,22 @@ public class scanController {
     return found;
    }
 
-   public static Map<String, Method> getUrlMappings(Class<?> controllerClass) {
-    Map<String, Method> mappings = new HashMap<>();
+   public static Map<UrlMethod, Method> getUrlMappings(Class<?> controllerClass) {
+    Map<UrlMethod, Method> mappings = new HashMap<>();
     for (Method method : controllerClass.getDeclaredMethods()) {
         UrlMapping mapping = method.getAnnotation(UrlMapping.class);
         if (mapping != null) {
-            mappings.put(mapping.value(), method);
+            UrlMethod key = new UrlMethod(mapping.value(), mapping.method());
+            if (mappings.containsKey(key)) {
+                Method existing = mappings.get(key);
+                throw new RuntimeException(
+                    "UrlMapping dupliqué : " + key +
+                    " (déjà déclaré dans " + existing.getDeclaringClass().getName() +
+                    "." + existing.getName() +
+                    ") en conflit avec " + controllerClass.getName() + "." + method.getName()
+                );
+            }
+            mappings.put(key, method);
                 }
             }
     return mappings;
