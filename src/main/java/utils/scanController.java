@@ -52,7 +52,17 @@ public class scanController {
     for (Method method : controllerClass.getDeclaredMethods()) {
         UrlMapping mapping = method.getAnnotation(UrlMapping.class);
         if (mapping != null) {
-            mappings.put(new UrlMethod(mapping.value(), mapping.method()), method);
+            UrlMethod key = new UrlMethod(mapping.value(), mapping.method());
+            if (mappings.containsKey(key)) {
+                Method existing = mappings.get(key);
+                throw new RuntimeException(
+                    "UrlMapping dupliqué : " + key +
+                    " (déjà déclaré dans " + existing.getDeclaringClass().getName() +
+                    "." + existing.getName() +
+                    ") en conflit avec " + controllerClass.getName() + "." + method.getName()
+                );
+            }
+            mappings.put(key, method);
                 }
             }
     return mappings;
