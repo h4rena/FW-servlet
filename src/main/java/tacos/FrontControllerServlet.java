@@ -8,6 +8,7 @@ import java.util.Map;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 
+import main.java.model.ModelAndView;
 import main.java.model.UrlMethod;
 import main.java.utils.scanController;
 
@@ -96,8 +97,16 @@ public class FrontControllerServlet extends HttpServlet {
 
             try {
                 Object controller = controllerInstances.get(method.getDeclaringClass().getName());
-
                 Object result = method.invoke(controller);
+
+                if (result instanceof ModelAndView) {
+                    ModelAndView mv = (ModelAndView) result;
+                    String view = mv.getView();
+                    for (Map.Entry<String, Object> e : mv.getData().entrySet())
+                        req.setAttribute(e.getKey(), e.getValue());
+                    req.getRequestDispatcher("/WEB-INF/views/" + view + ".jsp").forward(req, res);
+                    return;
+                }
 
                 out.println("method invoque : " + "<p>" + result + "</p>");
 
