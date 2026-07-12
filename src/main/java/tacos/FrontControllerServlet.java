@@ -1,6 +1,6 @@
 package main.java.tacos;
 
-import java.io.*;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +8,7 @@ import java.util.Map;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 
+import main.java.model.ModelAndView;
 import main.java.model.UrlMethod;
 import main.java.utils.scanController;
 
@@ -82,45 +83,34 @@ public class FrontControllerServlet extends HttpServlet {
         Method method = getMethodForUrl(path, httpMethod);
 
         if (method != null) {
-            res.setContentType("text/html;charset=UTF-8");
-            PrintWriter out = res.getWriter();
-
-            out.println("<table border='1'>");
-            out.println("<tr><th>Controller</th><th>URL</th><th>UrlMethod</th><th>Methode</th></tr>");
-            out.println("<tr>");
-            out.println("<td>" + method.getDeclaringClass().getName() + "</td>");
-            out.println("<td>" + path + "</td>");
-            out.println("<td>" + httpMethod + "</td>");
-            out.println("<td>" + method.getName() + "()</td>");
-            out.println("</tr></table>");
-
             try {
                 Object controller = controllerInstances.get(method.getDeclaringClass().getName());
                 Object result = method.invoke(controller);
-                out.println("<p>" + "method invoque : " + result + "</p>");
+
+                if (result instanceof ModelAndView) {
+                    ModelAndView mv = (ModelAndView) result;
+                    for (Map.Entry<String, Object> e : mv.getData().entrySet())
+                        req.setAttribute(e.getKey(), e.getValue());
+                    req.getRequestDispatcher("/WEB-INF/views/" + mv.getView() + ".jsp").forward(req, res);
+                    return;
+                }
+
+                req.setAttribute("controllerClass", method.getDeclaringClass().getName());
+                req.setAttribute("url", path);
+                req.setAttribute("httpMethod", httpMethod);
+                req.setAttribute("methodName", method.getName());
+                req.setAttribute("result", result);
+                req.getRequestDispatcher("/WEB-INF/views/mapping.jsp").forward(req, res);
+
             } catch (Exception e) {
                 throw new ServletException("Erreur invocation de " + method.getName(), e);
             }
+
         } else {
-            res.setContentType("text/html;charset=UTF-8");
-            PrintWriter out = res.getWriter();
-            out.println("<p style='color:red'>Aucune methode pour " + httpMethod + " " + path + "</p>");
-            out.println("<hr/><h3>Tous les URL mappings disponibles :</h3>");
-            out.println("<table border='1'>");
-            out.println("<tr><th>Controller</th><th>URL</th><th>UrlMethod</th><th>Methode</th></tr>");
-            if (urlMappings != null) {
-                for (Map.Entry<UrlMethod, Method> entry : urlMappings.entrySet()) {
-                    Method m = entry.getValue();
-                    UrlMethod key = entry.getKey();
-                    out.println("<tr>");
-                    out.println("<td>" + m.getDeclaringClass().getName() + "</td>");
-                    out.println("<td>" + key.getUrl() + "</td>");
-                    out.println("<td>" + key.getMethod() + "</td>");
-                    out.println("<td>" + m.getName() + "()</td>");
-                    out.println("</tr>");
-                }
-            }
-            out.println("</table>");
+            req.setAttribute("requestedUrl", path);
+            req.setAttribute("requestedMethod", httpMethod);
+            req.setAttribute("allMappings", urlMappings);
+            req.getRequestDispatcher("/WEB-INF/views/error_mapping.jsp").forward(req, res);
         }
     }
 
