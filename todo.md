@@ -118,3 +118,9 @@ invoke avec reflect ce que la methodfait
 
 S4
 alaina any am ilay navita context applistener
+
+s6
+mamorona annotation webapi izay tsy mandeha view
+annotation niveau method
+rehefa hanao dispatch de mitest oe misy ve le izy 
+tokony json miverina
