@@ -7,7 +7,6 @@ import java.lang.annotation.ElementType;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface UrlMapping {
+public @interface FWRoute {
     String value();
-    String method() default "GET";
 }
