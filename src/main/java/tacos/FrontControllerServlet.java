@@ -1,21 +1,24 @@
 package main.java.tacos;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
-
+import main.java.annotation.WebApi;
 import main.java.model.ModelAndView;
 import main.java.model.UrlMethod;
 import main.java.utils.scanController;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class FrontControllerServlet extends HttpServlet {
 
     private Map<UrlMethod, Method> urlMappings;
     private Map<String, Object> controllerInstances;
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
     public void init() throws ServletException {
         String pkg = getServletContext().getInitParameter("controllers-package");
@@ -86,6 +89,14 @@ public class FrontControllerServlet extends HttpServlet {
             try {
                 Object controller = controllerInstances.get(method.getDeclaringClass().getName());
                 Object result = method.invoke(controller);
+
+                WebApi api = method.getAnnotation(WebApi.class);   // <- la détection
+                if (api != null) {
+                    res.setContentType("application/json;charset=UTF-8");
+                    PrintWriter out = res.getWriter();
+                    out.write(api.toJson() ? MAPPER.writeValueAsString(result) : String.valueOf(result));
+                    return;                                        // <- pas de RequestDispatcher
+                }
 
                 if (result instanceof ModelAndView) {
                     ModelAndView mv = (ModelAndView) result;

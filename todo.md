@@ -118,3 +118,36 @@ invoke avec reflect ce que la methodfait
 
 S4
 alaina any am ilay navita context applistener
+
+s6
+mamorona annotation webapi izay tsy mandeha view
+annotation niveau method
+rehefa hanao dispatch de mitest oe misy ve le izy 
+tokony json miverina
+      
+Lasa server web API le framework (mamerina json)
+
+Objectif : miteny le développeur  :
+Ty misy IRL de au lieu de mi rediriger any am vue me api de mamerina JSON
+
+(Tsy manao requestDispatcher zany fa mamerina JSON). 
+
+
+Ny atao :
+Mi creer annotation vaovao Niveau methode ( @WebAPI de apina attribut true / false)
+
+
+Refa présent le annotation amle méthode :
+au lieu de mi requestDispatcher de manisy If/else oe présent ve ke annotation 
+Ra ye ka :
+
+True : mamerina JSON tel que Objet no avrina amle dev de mapiasa librairie ammadika ho json 
+.tojson()
+
+False : mamerina anle JSON tel que tode String sous forme JSON fotsn no averina 
+
+...
+
+Ao amle FrontController : Ovaina Content/json no averina (header )
+
+De ny body fotsn le jso ho averina io
