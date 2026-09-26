@@ -1,6 +1,6 @@
 package main.java;
 
-import main.java.annotation.FWRoute;
+import main.java.annotation.UrlMapping;
 import java.lang.reflect.Method;
 
 public class Main {
