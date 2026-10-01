@@ -3,6 +3,7 @@ package main.java.tacos;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,14 +89,15 @@ public class FrontControllerServlet extends HttpServlet {
         if (method != null) {
             try {
                 Object controller = controllerInstances.get(method.getDeclaringClass().getName());
-                Object result = method.invoke(controller);
+                Object[] args = buildArguments(method, req, res); //pour la construction des arguments de la method
+                Object result = method.invoke(controller, args);
 
-                WebApi api = method.getAnnotation(WebApi.class);   // <- la détection
+                WebApi api = method.getAnnotation(WebApi.class);
                 if (api != null) {
                     res.setContentType("application/json;charset=UTF-8");
                     PrintWriter out = res.getWriter();
                     out.write(api.toJson() ? MAPPER.writeValueAsString(result) : String.valueOf(result));
-                    return;                                        // <- pas de RequestDispatcher
+                    return;
                 }
 
                 if (result instanceof ModelAndView) {
@@ -123,6 +125,34 @@ public class FrontControllerServlet extends HttpServlet {
             req.setAttribute("allMappings", urlMappings);
             req.getRequestDispatcher("/WEB-INF/views/error_mapping.jsp").forward(req, res);
         }
+    }
+
+    protected Object[] buildArguments(Method method, HttpServletRequest req, HttpServletResponse res) {
+
+        int count = method.getParameterCount();
+
+        if (count == 0) return new Object[0];
+
+        Object[] args = new Object[count];
+        Parameter[] params = method.getParameters();
+
+        for (int i = 0; i < count; i++) {
+            Class<?> type = params[i].getType();
+
+            if (type == HttpServletRequest.class) {
+                args[i] = req;
+            } else if (type == HttpServletResponse.class) {
+                args[i] = res;
+            } else if (type == HttpSession.class) {
+                args[i] = req.getSession();
+            } else {
+                throw new RuntimeException(
+                    "Type de paramètre non supporté par buildArguments : " + type.getName()
+                    + " (méthode " + method.getName() + ", paramètre " + i + ")");
+            }
+        }
+
+        return args;
     }
 
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {
