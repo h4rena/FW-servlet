@@ -151,3 +151,20 @@ False : mamerina anle JSON tel que tode String sous forme JSON fotsn no averina
 Ao amle FrontController : Ovaina Content/json no averina (header )
 
 De ny body fotsn le jso ho averina io
+
+S7-   
+raha misy formulaire...tonga ery am formulaire lasa instance ana objet --> bending anarany ilay izy
+
+donnee tonga avy aty am controller mande any am view (return modelandview)--- efa vita zay fa raha misy donnees aty am view mande any am controller ilay izy zao
+
+manana form ana ajout ohatra miteny anaty formulaire rehefa mikitika bouton submit de mande any am url ty ....mappena am method iray amina controller iray ohatra oe method save raha employe de tokony mandray argument employer 
+
+rehefa mi clique bouton de makao am le frontcontroller fona de fantatra oe save le izy (emp/save) de verifier le methode oe save oe misy parametre le methode
+
+mandray parametre emp ohatra de manao matching (fantany ilay variable ao fanatny anarany variable tonga am le requete) omeny valeur raha ohatra ka tsy objet (ohatra oe save de tsy tonga de mandray param emp) froze exeption raha vao misy objet (pour l instant )na hatao null 
+manome valeur le param le param rehefa mi invoke methode
+
+match raha misy mitovy anarana am le param requ get param apetraka rehfa manao invoke
+jerena getparam names 
+
+
