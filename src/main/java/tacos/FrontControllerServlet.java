@@ -145,6 +145,21 @@ public class FrontControllerServlet extends HttpServlet {
                 args[i] = res;
             } else if (type == HttpSession.class) {
                 args[i] = req.getSession();
+            } else if (type.isPrimitive()) {
+                String nom = params[i].isNamePresent() ? params[i].getName() : null;
+                String brut = nom == null ? null : req.getParameter(nom);
+
+                if (brut == null || brut.isBlank()) {
+                    args[i] = Integer.valueOf(0);
+                } else {
+                    try {
+                        args[i] = Integer.valueOf(brut);
+                    } catch (NumberFormatException nfe) {
+                        throw new RuntimeException(
+                            "Parametre '" + nom + "' de la methode " + method.getName()
+                            + " : '" + brut + "' n'est pas un entier");
+                    }
+                }
             } else {
                 throw new RuntimeException(
                     "Type de paramètre non supporté par buildArguments : " + type.getName()
