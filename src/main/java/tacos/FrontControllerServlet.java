@@ -145,6 +145,26 @@ public class FrontControllerServlet extends HttpServlet {
                 args[i] = res;
             } else if (type == HttpSession.class) {
                 args[i] = req.getSession();
+            } else if (type == String.class) {
+                args[i] = req.getParameter(nomParametre(params[i], method));
+            } else if (type == int.class) {
+                String nom = nomParametre(params[i], method);
+                String brut = req.getParameter(nom);
+                if (brut == null || brut.isBlank()) {
+                    args[i] = Integer.valueOf(0);
+                } else {
+                    try {
+                        args[i] = Integer.valueOf(brut);
+                    } catch (NumberFormatException nfe) {
+                        throw new RuntimeException(
+                            "Parametre '" + nom + "' de la methode " + method.getName()
+                            + " : '" + brut + "' n'est pas un entier");
+                    }
+                }
+            } else if (type == boolean.class) {
+                String brut = req.getParameter(nomParametre(params[i], method));
+                args[i] = (brut != null && (brut.equalsIgnoreCase("true") || brut.equalsIgnoreCase("on")
+                        || brut.equals("1") || brut.equalsIgnoreCase("yes")));
             } else {
                 throw new RuntimeException(
                     "Type de paramètre non supporté par buildArguments : " + type.getName()
@@ -153,6 +173,14 @@ public class FrontControllerServlet extends HttpServlet {
         }
 
         return args;
+    }
+
+    private String nomParametre(Parameter p, Method method) {
+        if (!p.isNamePresent())
+            throw new RuntimeException(
+                "Nom du parametre indisponible pour " + method.getName()
+                + " : recompiler avec -parameters");
+        return p.getName();
     }
 
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {
