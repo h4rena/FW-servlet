@@ -3,7 +3,6 @@ package main.java.tacos;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +11,7 @@ import jakarta.servlet.http.*;
 import main.java.annotation.WebApi;
 import main.java.model.ModelAndView;
 import main.java.model.UrlMethod;
+import main.java.utils.Binder;
 import main.java.utils.scanController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -89,7 +89,7 @@ public class FrontControllerServlet extends HttpServlet {
         if (method != null) {
             try {
                 Object controller = controllerInstances.get(method.getDeclaringClass().getName());
-                Object[] args = bind(req, method);
+                Object[] args = Binder.bind(req, method);
                 Object result = method.invoke(controller, args);
 
                 WebApi api = method.getAnnotation(WebApi.class);   // <- la détection
@@ -125,51 +125,6 @@ public class FrontControllerServlet extends HttpServlet {
             req.setAttribute("allMappings", urlMappings);
             req.getRequestDispatcher("/WEB-INF/views/error_mapping.jsp").forward(req, res);
         }
-    }
-
-    protected Object[] bind(HttpServletRequest req, Method method) {
-        Parameter[] params = method.getParameters();
-        Object[] args = new Object[params.length];
-
-        for (int i = 0; i < params.length; i++) {
-            String nom = nomParametre(params[i], method);
-            String valeur = req.getParameter(nom);
-            Class<?> type = params[i].getType();
-
-            if (type == String.class) {
-                args[i] = valeur;
-            } else if (type == int.class) {
-                if (valeur == null || valeur.isBlank()) {
-                    args[i] = Integer.valueOf(0);
-                } else {
-                    try {
-                        args[i] = Integer.valueOf(valeur);
-                    } catch (NumberFormatException nfe) {
-                        throw new RuntimeException(
-                            "Parametre '" + nom + "' de la methode " + method.getName()
-                            + " : '" + valeur + "' n'est pas un entier");
-                    }
-                }
-            } else if (type == boolean.class) {
-                args[i] = "true".equalsIgnoreCase(valeur)
-                        || "on".equalsIgnoreCase(valeur)
-                        || "1".equals(valeur);
-            } else {
-                throw new RuntimeException(
-                    "Type de parametre non supporté par bind : " + type.getName()
-                    + " (methode " + method.getName() + ", parametre " + i + ")");
-            }
-        }
-
-        return args;
-    }
-
-    private String nomParametre(Parameter p, Method method) {
-        if (!p.isNamePresent())
-            throw new RuntimeException(
-                "Nom du parametre indisponible pour " + method.getName()
-                + " : recompiler avec -parameters");
-        return p.getName();
     }
 
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {
