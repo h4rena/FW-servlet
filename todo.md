@@ -151,3 +151,6 @@ False : mamerina anle JSON tel que tode String sous forme JSON fotsn no averina
 Ao amle FrontController : Ovaina Content/json no averina (header )
 
 De ny body fotsn le jso ho averina io
+
+s7bis
+ manome valeur ny objet fa tsy exception tsony

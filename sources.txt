@@ -1,4 +1,5 @@
 /home/hatsugoki/Web-dyn/Framework-servlet/src/main/java/Main.java
+/home/hatsugoki/Web-dyn/Framework-servlet/src/main/java/utils/Binder.java
 /home/hatsugoki/Web-dyn/Framework-servlet/src/main/java/utils/scanController.java
 /home/hatsugoki/Web-dyn/Framework-servlet/src/main/java/utils/AppListener.java
 /home/hatsugoki/Web-dyn/Framework-servlet/src/main/java/model/UrlMethod.java
