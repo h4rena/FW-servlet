@@ -154,3 +154,27 @@ De ny body fotsn le jso ho averina io
 
 s7bis
  manome valeur ny objet fa tsy exception tsony
+
+
+Sprint 8
+
+Refa tonga any am serveur de avaka jerena oe misy le tonga avy any am client ve type=file
+
+Refa tonga de misafidy le dev oe stockena anaty serveur ve sa stockena anaty base ...
+
+Comment zany azahoana anle fichier 
+(Mila Tonga ao amle methode d'action fotsn le File)
+
+Mi creer classe vaovao
+
+MapTile 
+
+Anarany ,
+Extension,
+Tableau ana Byte[]
+
+De io instanciena aty am Framework 
+
+Refa maita match (Binding) anaty Formulaire 
+De mijery ny attributs anle methode (Ohatra oe Mila MapFile) de mi creer instance ana MapFile  , 
+De fenoina daoly le parametre anle methode exactement comme tel fa saingy. Mapfile ko fenoina
