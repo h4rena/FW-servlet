@@ -1,12 +1,18 @@
 package main.java.utils;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.Part;
+
+import main.java.model.MapFile;
 
 public class Binder {
 
@@ -20,6 +26,8 @@ public class Binder {
 
             if (type == String.class || type == int.class || type == boolean.class) {
                 args[i] = convertirNonObjet(req.getParameter(nom), type, nom, method.getName());
+            } else if (type == MapFile.class) {
+                args[i] = construireFichier(req, nom, method.getName());
             } else {
                 args[i] = construireObjet(req, type, nom, method.getName());
             }
@@ -130,4 +138,33 @@ public class Binder {
                 + " : recompiler avec -parameters");
         return p.getName();
     }
+
+    private static MapFile construireFichier(HttpServletRequest req, String nom, String methode) {
+    Part part;
+    try {
+        part = req.getPart(nom);
+    } catch (IOException | ServletException e) {
+        throw new RuntimeException("Lecture du fichier '" + nom + "' impossible"
+            + " (methode " + methode + ") : " + e.getMessage(), e);
+    }
+    if (part == null) return null;               // champ absent
+
+    String nomFichier = part.getSubmittedFileName();
+    if (nomFichier == null) nomFichier = "";
+    byte[] contenu;
+    try (InputStream in = part.getInputStream()) {
+        contenu = in.readAllBytes();
+    } catch (IOException e) {
+        throw new RuntimeException("Lecture du contenu de '" + nomFichier
+            + "' impossible : " + e.getMessage(), e);
+    }
+    return new MapFile(nomFichier, extensionDe(nomFichier), contenu);
+    }
+
+    private static String extensionDe(String nomFichier) {
+        int point = nomFichier.lastIndexOf('.');
+        if (point <= 0 || point == nomFichier.length() - 1) return "";
+        return nomFichier.substring(point + 1);
+    }
+
 }
