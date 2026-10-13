@@ -12,14 +12,13 @@ import main.java.annotation.WebApi;
 import main.java.model.ModelAndView;
 import main.java.model.UrlMethod;
 import main.java.utils.Binder;
+import main.java.utils.JsonSerializer;
 import main.java.utils.scanController;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class FrontControllerServlet extends HttpServlet {
 
     private Map<UrlMethod, Method> urlMappings;
     private Map<String, Object> controllerInstances;
-    private static final ObjectMapper MAPPER = new ObjectMapper();
 
     public void init() throws ServletException {
         String pkg = getServletContext().getInitParameter("controllers-package");
@@ -96,7 +95,7 @@ public class FrontControllerServlet extends HttpServlet {
                 if (api != null) {
                     res.setContentType("application/json;charset=UTF-8");
                     PrintWriter out = res.getWriter();
-                    out.write(api.toJson() ? MAPPER.writeValueAsString(result) : String.valueOf(result));
+                    out.write(api.toJson() ? JsonSerializer.serialize(result) : String.valueOf(result));
                     return;                                        // <- pas de RequestDispatcher
                 }
 
