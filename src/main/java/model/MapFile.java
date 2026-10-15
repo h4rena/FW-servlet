@@ -5,6 +5,7 @@ public class MapFile {
     private String nom;
     private String extension;
     private byte[] contenu;
+    private String chemin; 
 
     public MapFile() {
     }
@@ -43,8 +44,16 @@ public class MapFile {
         return contenu == null ? 0 : contenu.length;
     }
 
+    public String getChemin() { 
+        return chemin; 
+    }
+
+    public void setChemin(String chemin) { 
+        this.chemin = chemin; 
+    }
+
     public String toString() {
         return "MapFile{nom=" + nom + ", extension=" + extension
-             + ", taille=" + getTaille() + "}";
+             + ", taille=" + getTaille() + ", chemin=" + getChemin() + "}";
     }
 }

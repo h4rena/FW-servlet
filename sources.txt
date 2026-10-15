@@ -1,4 +1,5 @@
 /home/hatsugoki/Web-dyn/Framework-servlet/src/main/java/Main.java
+/home/hatsugoki/Web-dyn/Framework-servlet/src/main/java/utils/AppConfig.java
 /home/hatsugoki/Web-dyn/Framework-servlet/src/main/java/utils/Binder.java
 /home/hatsugoki/Web-dyn/Framework-servlet/src/main/java/utils/JsonSerializer.java
 /home/hatsugoki/Web-dyn/Framework-servlet/src/main/java/utils/scanController.java
