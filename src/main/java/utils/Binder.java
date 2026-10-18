@@ -1,12 +1,19 @@
 package main.java.utils;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.Part;
+
+import main.java.model.MapFile;
 
 public class Binder {
 
@@ -20,6 +27,8 @@ public class Binder {
 
             if (type == String.class || type == int.class || type == boolean.class) {
                 args[i] = convertirNonObjet(req.getParameter(nom), type, nom, method.getName());
+            } else if (type == MapFile.class) {
+                args[i] = construireFichier(req, nom, method.getName());
             } else {
                 args[i] = construireObjet(req, type, nom, method.getName());
             }
@@ -62,20 +71,18 @@ public class Binder {
     private static Object construireObjet(HttpServletRequest req, Class<?> type,
                                      String chemin, String methode) {
 
-        if (type == HttpServletRequest.class
-                || type == HttpServletResponse.class
-                || type == HttpSession.class) {
-            throw new RuntimeException(
-                "Injection de " + type.getName() + " non supportee"
-                + " (methode " + methode + ", parametre " + chemin + ")");
-        }
-
         if (type.isInterface()) {
             throw new RuntimeException(
                 "Type " + type.getName() + " : interface, impossible a construire"
                 + " (methode " + methode + ", parametre " + chemin + ")");
         }
 
+        Object instance = instancier(type, chemin, methode);
+        remplirSetters(instance, type, req, chemin, methode);
+        return instance;
+    }
+
+    private static Object instancier(Class<?> type, String chemin, String methode) {
         Constructor<?> constructeur;
         try {
             constructeur = type.getDeclaredConstructor();
@@ -85,15 +92,17 @@ public class Binder {
                 + " (methode " + methode + ", parametre " + chemin + ")");
         }
 
-        Object instance;
         try {
             constructeur.setAccessible(true);
-            instance = constructeur.newInstance();
+            return constructeur.newInstance();
         } catch (ReflectiveOperationException | RuntimeException e) {
             throw new RuntimeException(
                 "Impossible d'instancier " + type.getName() + " : " + e, e);
         }
+    }
 
+    private static void remplirSetters(Object instance, Class<?> type,
+                                     HttpServletRequest req, String chemin, String methode) {
         for (Method setter : type.getMethods()) {
             if (!setter.getName().startsWith("set")) continue;
             if (setter.getName().length() <= 3) continue;
@@ -114,8 +123,6 @@ public class Binder {
                     + " a echoue : " + e.getCause(), e);
             }
         }
-
-        return instance;
     }
 
     private static String nomPropriete(String setter) {
@@ -130,4 +137,51 @@ public class Binder {
                 + " : recompiler avec -parameters");
         return p.getName();
     }
+
+    private static MapFile construireFichier(HttpServletRequest req, String nom, String methode) {
+    Part part;
+    try {
+        part = req.getPart(nom);
+    } catch (IOException | ServletException e) {
+        throw new RuntimeException("Lecture du fichier '" + nom + "' impossible"
+            + " (methode " + methode + ") : " + e.getMessage(), e);
+    }
+    if (part == null) return null;               // champ absent
+
+    String nomFichier = part.getSubmittedFileName();
+    if (nomFichier == null) nomFichier = "";
+    byte[] contenu;
+    try (InputStream in = part.getInputStream()) {
+        contenu = in.readAllBytes();
+    } catch (IOException e) {
+        throw new RuntimeException("Lecture du contenu de '" + nomFichier
+            + "' impossible : " + e.getMessage(), e);
+    }
+
+    //pour upload avec application.properties
+    MapFile fichier = new MapFile(nomFichier, extensionDe(nomFichier), contenu);
+
+    String dir = AppConfig.get("upload.dir");
+    if (dir != null && !dir.isBlank() && !nomFichier.isBlank()) {
+        try {
+            String sur = Paths.get(nomFichier).getFileName().toString();  // anti "../"
+            Path dossier = Paths.get(dir);
+            Files.createDirectories(dossier);                             // crée si absent
+            Path dest = dossier.resolve(sur);
+            Files.write(dest, contenu);                                   // écrire les octets
+            fichier.setChemin(dest.toString());
+        } catch (IOException e) {
+            throw new RuntimeException("Ecriture de '" + nomFichier + "' impossible : "
+                + e.getMessage(), e);
+        }
+    }
+    return fichier;
+    }
+
+    private static String extensionDe(String nomFichier) {
+        int point = nomFichier.lastIndexOf('.');
+        if (point <= 0 || point == nomFichier.length() - 1) return "";
+        return nomFichier.substring(point + 1);
+    }
+
 }

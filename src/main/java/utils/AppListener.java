@@ -1,5 +1,6 @@
 package main.java.utils;
 
+import java.io.InputStream;
 import java.util.List;
 
 import jakarta.servlet.ServletContext;
@@ -15,6 +16,12 @@ public class AppListener implements ServletContextListener {
 
         try {
             ServletContext ctx = sce.getServletContext();
+
+            //pour application.properties 
+            InputStream in = ctx.getResourceAsStream("/WEB-INF/application.properties");
+            AppConfig.load(in);
+            System.out.println("upload.dir = " + AppConfig.get("upload.dir"));
+            //
 
             String pkg = ctx.getInitParameter("controllers-package");
 

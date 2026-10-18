@@ -15,3 +15,5 @@ sources.txt
 Thumbs.db
 *.swp
 *~
+
+uploads/*
