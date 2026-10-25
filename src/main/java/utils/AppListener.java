@@ -6,6 +6,7 @@ import java.util.List;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
+import main.java.model.Session;
 
 public class AppListener implements ServletContextListener {
 
@@ -30,6 +31,9 @@ public class AppListener implements ServletContextListener {
             List<String> controllers = new scanController().scanControllers(pkg);
 
             ctx.setAttribute("controllers", controllers);
+
+            //pour la session
+            ctx.setAttribute("session", new Session());
 
             System.out.println("Controllers scannés : " + controllers);
 
