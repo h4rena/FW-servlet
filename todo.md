@@ -178,3 +178,30 @@ De io instanciena aty am Framework
 Refa maita match (Binding) anaty Formulaire 
 De mijery ny attributs anle methode (Ohatra oe Mila MapFile) de mi creer instance ana MapFile  , 
 De fenoina daoly le parametre anle methode exactement comme tel fa saingy. Mapfile ko fenoina
+
+s9 
+session
+cree class session utilisaton map string object
+recuperer session dutilisateur pour lenvoyer dans controller dev
+context stocke une instance de session
+
+Misy méthode d'action anaty controller dev 
+Associer anaty url
+Am rentré méthode Ren tenenina tsy maintsy connecter VAO afaka miexecuter azy
+Tsy maintsy connecter (authentifier Ilay olona VAO mahazo mi exécuter
+
+On a une méthode d'action qui agit sur le controller dev
+Assiocier dans un url
+Dans la rentré des méthode on fait simple que on doit être connecté avant de pouvoir exécuter la méthode
+C est a dire que la personne doit être connecter (authentifier avant de pouvoir exécuter )
+
+
+S10 bis
+Tsy connecté fotsiny fa role spécifique 
+Ohatra role prof ihany VAO afaka mi exécuter anty
+Asiana role fotsiny zany 
+Session param
+
+Maintenant la personne ne doit pas simplement être connecter mais avoir un rôle spécifique 
+Par exemple y a que les role prof qui ont le droit de exécuter cela
+Utiliser session param ?a voir

@@ -1,0 +1,33 @@
+package main.java.model;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class Session {
+
+    private final Map<String, Object> data = new HashMap<>();
+
+    public void set(String cle, Object valeur) {
+        data.put(cle, valeur);
+    }
+
+    public Object get(String cle) {
+        return data.get(cle);
+    }
+
+    public boolean has(String cle) {
+        return data.containsKey(cle);
+    }
+
+    public void remove(String cle) {
+        data.remove(cle);
+    }
+
+    public Map<String, Object> getData() {
+        return data;
+    }
+
+    public String toString() {
+        return "Session" + data;
+    }
+}

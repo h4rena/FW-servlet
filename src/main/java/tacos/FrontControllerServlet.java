@@ -2,6 +2,7 @@ package main.java.tacos;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +11,7 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import main.java.annotation.WebApi;
 import main.java.model.ModelAndView;
+import main.java.model.Session;
 import main.java.model.UrlMethod;
 import main.java.utils.Binder;
 import main.java.utils.JsonSerializer;
@@ -31,6 +33,8 @@ public class FrontControllerServlet extends HttpServlet {
             for (String name : controllers) {
                 Class<?> clazz = Class.forName(name);
                 Object instance = clazz.getDeclaredConstructor().newInstance();
+                //session injection
+                injecterSession(instance);
                 controllerInstances.put(name, instance);
 
                 Map<UrlMethod, Method> classMappings = scanController.getUrlMappings(clazz);
@@ -70,6 +74,25 @@ public class FrontControllerServlet extends HttpServlet {
         Method m = getMethodForUrl(path, httpMethod);
         if (m == null || controllerInstances == null) return null;
         return controllerInstances.get(m.getDeclaringClass().getName());
+    }
+
+    //session injection
+    private void injecterSession(Object controller) {
+        Session session = (Session) getServletContext().getAttribute("session");
+        if (session == null) return;
+
+        for (Field f : controller.getClass().getDeclaredFields()) {
+            if (f.getType() == Session.class) {
+                try {
+                    f.setAccessible(true);
+                    f.set(controller, session);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(
+                        "Injection de la session impossible dans "
+                        + controller.getClass().getName(), e);
+                }
+            }
+        }
     }
 
     public void processRequest(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
