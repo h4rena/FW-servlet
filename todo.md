@@ -190,6 +190,7 @@ Associer anaty url
 Am rentré méthode Ren tenenina tsy maintsy connecter VAO afaka miexecuter azy
 Tsy maintsy connecter (authentifier Ilay olona VAO mahazo mi exécuter
 
+s10
 On a une méthode d'action qui agit sur le controller dev
 Assiocier dans un url
 Dans la rentré des méthode on fait simple que on doit être connecté avant de pouvoir exécuter la méthode
