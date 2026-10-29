@@ -27,6 +27,10 @@ public class Session {
         data.remove(cle);
     }
 
+    public void clear() {
+        data.clear();
+    }
+
     public Map<String, Object> getData() {
         return data;
     }
