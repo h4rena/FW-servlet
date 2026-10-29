@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
+import main.java.annotation.RequireAuth;
 import main.java.annotation.WebApi;
 import main.java.model.ModelAndView;
 import main.java.model.Session;
@@ -95,6 +96,22 @@ public class FrontControllerServlet extends HttpServlet {
         }
     }
 
+    private boolean estConnecte() {
+        Session session = (Session) getServletContext().getAttribute("session");
+        return session != null && session.estConnecte();
+    }
+
+    private void gererNonAuthentifie(HttpServletRequest req, HttpServletResponse res,
+                                    Method method) throws IOException {
+        if (method.isAnnotationPresent(WebApi.class)) {
+            res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            res.setContentType("application/json;charset=UTF-8");
+            res.getWriter().write("{\"erreur\":\"Non authentifie\"}");
+        } else {
+            res.sendRedirect(req.getContextPath() + "/login.jsp");
+        }
+    }
+
     public void processRequest(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         String error = (String) getServletContext().getAttribute("initError");
         if (error != null) {
@@ -109,6 +126,11 @@ public class FrontControllerServlet extends HttpServlet {
         Method method = getMethodForUrl(path, httpMethod);
 
         if (method != null) {
+            if (method.isAnnotationPresent(RequireAuth.class) && !estConnecte()) {
+                gererNonAuthentifie(req, res, method);
+                return;
+            }
+
             try {
                 Object controller = controllerInstances.get(method.getDeclaringClass().getName());
                 Object[] args = Binder.bind(req, method);

@@ -11,4 +11,5 @@
 /home/hatsugoki/Web-dyn/Framework-servlet/src/main/java/tacos/FrontControllerServlet.java
 /home/hatsugoki/Web-dyn/Framework-servlet/src/main/java/annotation/FWController.java
 /home/hatsugoki/Web-dyn/Framework-servlet/src/main/java/annotation/WebApi.java
+/home/hatsugoki/Web-dyn/Framework-servlet/src/main/java/annotation/RequireAuth.java
 /home/hatsugoki/Web-dyn/Framework-servlet/src/main/java/annotation/UrlMapping.java

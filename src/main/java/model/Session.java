@@ -19,8 +19,16 @@ public class Session {
         return data.containsKey(cle);
     }
 
+    public boolean estConnecte() {
+        return data.containsKey("user");
+    }
+
     public void remove(String cle) {
         data.remove(cle);
+    }
+
+    public void clear() {
+        data.clear();
     }
 
     public Map<String, Object> getData() {
