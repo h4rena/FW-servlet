@@ -23,6 +23,10 @@ public class Session {
         return data.containsKey("user");
     }
 
+    public boolean aRole(String role) {
+        return role != null && role.equals(data.get("role"));
+    }
+
     public void remove(String cle) {
         data.remove(cle);
     }

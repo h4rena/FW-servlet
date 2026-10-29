@@ -96,11 +96,6 @@ public class FrontControllerServlet extends HttpServlet {
         }
     }
 
-    private boolean estConnecte() {
-        Session session = (Session) getServletContext().getAttribute("session");
-        return session != null && session.estConnecte();
-    }
-
     private void gererNonAuthentifie(HttpServletRequest req, HttpServletResponse res,
                                     Method method) throws IOException {
         if (method.isAnnotationPresent(WebApi.class)) {
@@ -109,6 +104,18 @@ public class FrontControllerServlet extends HttpServlet {
             res.getWriter().write("{\"erreur\":\"Non authentifie\"}");
         } else {
             res.sendRedirect(req.getContextPath() + "/login.jsp");
+        }
+    }
+
+    private void gererAccesRefuse(HttpServletRequest req, HttpServletResponse res,
+                                 Method method, String roleRequis) throws ServletException, IOException {
+        res.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        if (method.isAnnotationPresent(WebApi.class)) {
+            res.setContentType("application/json;charset=UTF-8");
+            res.getWriter().write("{\"erreur\":\"Acces refuse\"}");
+        } else {
+            req.setAttribute("error", "Acces refuse : role requis = " + roleRequis);
+            req.getRequestDispatcher("/error.jsp").forward(req, res);
         }
     }
 
@@ -126,9 +133,17 @@ public class FrontControllerServlet extends HttpServlet {
         Method method = getMethodForUrl(path, httpMethod);
 
         if (method != null) {
-            if (method.isAnnotationPresent(RequireAuth.class) && !estConnecte()) {
-                gererNonAuthentifie(req, res, method);
-                return;
+            RequireAuth auth = method.getAnnotation(RequireAuth.class);
+            if (auth != null) {
+                Session session = (Session) getServletContext().getAttribute("session");
+                if (session == null || !session.estConnecte()) {
+                    gererNonAuthentifie(req, res, method);
+                    return;
+                }
+                if (!auth.role().isEmpty() && !session.aRole(auth.role())) {
+                    gererAccesRefuse(req, res, method, auth.role());
+                    return;
+                }
             }
 
             try {
