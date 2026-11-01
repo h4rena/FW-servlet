@@ -2,6 +2,7 @@
 /home/hatsugoki/Web-dyn/Framework-servlet/src/main/java/utils/AppConfig.java
 /home/hatsugoki/Web-dyn/Framework-servlet/src/main/java/utils/Binder.java
 /home/hatsugoki/Web-dyn/Framework-servlet/src/main/java/utils/JsonSerializer.java
+/home/hatsugoki/Web-dyn/Framework-servlet/src/main/java/utils/RoleConfig.java
 /home/hatsugoki/Web-dyn/Framework-servlet/src/main/java/utils/scanController.java
 /home/hatsugoki/Web-dyn/Framework-servlet/src/main/java/utils/AppListener.java
 /home/hatsugoki/Web-dyn/Framework-servlet/src/main/java/model/MapFile.java

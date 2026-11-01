@@ -24,6 +24,10 @@ public class AppListener implements ServletContextListener {
             System.out.println("upload.dir = " + AppConfig.get("upload.dir"));
             //
 
+            //utilisateurs -> roles (web.xml)
+            RoleConfig.load(ctx.getInitParameter("user-roles"));
+            System.out.println("user-roles = " + ctx.getInitParameter("user-roles"));
+
             String pkg = ctx.getInitParameter("controllers-package");
 
             if (pkg == null) pkg = "main.java.controllers";
