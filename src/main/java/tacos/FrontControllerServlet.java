@@ -133,7 +133,7 @@ public class FrontControllerServlet extends HttpServlet {
         String error = (String) getServletContext().getAttribute("initError");
         if (error != null) {
             req.setAttribute("error", error);
-            req.getRequestDispatcher("/error.jsp").forward(req, res);
+            req.getRequestDispatcher("/WEB-INF/views/error.jsp").forward(req, res);
             return;
         }
 
