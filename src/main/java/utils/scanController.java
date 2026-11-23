@@ -1,11 +1,16 @@
 package main.java.utils;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import main.java.annotation.FWController;
+import main.java.annotation.UrlMapping;
+import main.java.model.UrlMethod;
 
 public class scanController {
 
@@ -41,4 +46,25 @@ public class scanController {
     controllerNames = found;
     return found;
    }
+
+   public static Map<UrlMethod, Method> getUrlMappings(Class<?> controllerClass) {
+    Map<UrlMethod, Method> mappings = new HashMap<>();
+    for (Method method : controllerClass.getDeclaredMethods()) {
+        UrlMapping mapping = method.getAnnotation(UrlMapping.class);
+        if (mapping != null) {
+            UrlMethod key = new UrlMethod(mapping.value(), mapping.method());
+            if (mappings.containsKey(key)) {
+                Method existing = mappings.get(key);
+                throw new RuntimeException(
+                    "UrlMapping dupliqué : " + key +
+                    " (déjà déclaré dans " + existing.getDeclaringClass().getName() +
+                    "." + existing.getName() +
+                    ") en conflit avec " + controllerClass.getName() + "." + method.getName()
+                );
+            }
+            mappings.put(key, method);
+                }
+            }
+    return mappings;
+    }
 }
