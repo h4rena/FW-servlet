@@ -28,6 +28,10 @@ public class AppListener implements ServletContextListener {
             RoleConfig.load(ctx.getInitParameter("user-roles"));
             System.out.println("user-roles = " + ctx.getInitParameter("user-roles"));
 
+            //acces base via context-param (web.xml)
+            ctx.setAttribute("database", new Database(ctx));
+            System.out.println("db.url = " + ctx.getInitParameter("db.url"));
+
             String pkg = ctx.getInitParameter("controllers-package");
 
             if (pkg == null) pkg = "main.java.controllers";

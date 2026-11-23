@@ -15,6 +15,7 @@ import main.java.model.ModelAndView;
 import main.java.model.Session;
 import main.java.model.UrlMethod;
 import main.java.utils.Binder;
+import main.java.utils.Database;
 import main.java.utils.JsonSerializer;
 import main.java.utils.scanController;
 
@@ -34,8 +35,8 @@ public class FrontControllerServlet extends HttpServlet {
             for (String name : controllers) {
                 Class<?> clazz = Class.forName(name);
                 Object instance = clazz.getDeclaredConstructor().newInstance();
-                //session injection
-                injecterSession(instance);
+                //injection session + base
+                injecterDependances(instance);
                 controllerInstances.put(name, instance);
 
                 Map<UrlMethod, Method> classMappings = scanController.getUrlMappings(clazz);
@@ -77,21 +78,24 @@ public class FrontControllerServlet extends HttpServlet {
         return controllerInstances.get(m.getDeclaringClass().getName());
     }
 
-    //session injection
-    private void injecterSession(Object controller) {
+    //injection session + base
+    private void injecterDependances(Object controller) {
         Session session = (Session) getServletContext().getAttribute("session");
-        if (session == null) return;
+        Database database = (Database) getServletContext().getAttribute("database");
 
         for (Field f : controller.getClass().getDeclaredFields()) {
-            if (f.getType() == Session.class) {
-                try {
-                    f.setAccessible(true);
-                    f.set(controller, session);
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException(
-                        "Injection de la session impossible dans "
-                        + controller.getClass().getName(), e);
-                }
+            Object valeur = null;
+            if (f.getType() == Session.class) valeur = session;
+            else if (f.getType() == Database.class) valeur = database;
+            if (valeur == null) continue;
+
+            try {
+                f.setAccessible(true);
+                f.set(controller, valeur);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(
+                    "Injection impossible dans " + controller.getClass().getName()
+                    + " (champ " + f.getName() + ")", e);
             }
         }
     }
