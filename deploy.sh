@@ -12,10 +12,12 @@ SERVLET_API_JAR="/home/hatsugoki/tomcat/apache-tomcat-10.0.16/lib/servlet-api.ja
 # Nettoyage et création du répertoire temporaire
 rm -rf $BUILD_DIR
 mkdir -p $BUILD_DIR/WEB-INF/classes
+mkdir -p $BUILD_DIR/WEB-INF/lib
+cp -f "$LIB_DIR"/*.jar $BUILD_DIR/WEB-INF/lib/ 2>/dev/null || true
 
 # Compilation des fichiers Java avec le JAR des Servlets
 find $SRC_DIR -name "*.java" > sources.txt
-javac -cp $SERVLET_API_JAR -d $BUILD_DIR/WEB-INF/classes @sources.txt
+javac -parameters -cp "$SERVLET_API_JAR:$LIB_DIR/*" -d $BUILD_DIR/WEB-INF/classes @sources.txt
 # rm sources.txt
 
 # Copier les fichiers web (web.xml, JSP, etc.)

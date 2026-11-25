@@ -7,8 +7,13 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import jakarta.persistence.EntityManagerFactory;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.transaction.PlatformTransactionManager;
+
 import main.java.annotation.RequireAuth;
 import main.java.annotation.WebApi;
 import main.java.model.ModelAndView;
@@ -78,15 +83,28 @@ public class FrontControllerServlet extends HttpServlet {
         return controllerInstances.get(m.getDeclaringClass().getName());
     }
 
-    //injection session + base
+    //injection session + base + spring
     private void injecterDependances(Object controller) {
-        Session session = (Session) getServletContext().getAttribute("session");
-        Database database = (Database) getServletContext().getAttribute("database");
+        ServletContext ctx = getServletContext();
+        Session session = (Session) ctx.getAttribute("session");
+        Database database = (Database) ctx.getAttribute("database");
+        ApplicationContext spring = (ApplicationContext) ctx.getAttribute("springContext");
 
         for (Field f : controller.getClass().getDeclaredFields()) {
             Object valeur = null;
             if (f.getType() == Session.class) valeur = session;
             else if (f.getType() == Database.class) valeur = database;
+            else if (spring != null) {
+                if (f.getType() == ApplicationContext.class) valeur = spring;
+                else if (f.getType() == EntityManagerFactory.class) valeur = spring.getBean(EntityManagerFactory.class);
+                else if (f.getType() == PlatformTransactionManager.class) valeur = spring.getBean(PlatformTransactionManager.class);
+                else if (!f.getType().isPrimitive()) {
+                    try {
+                        valeur = spring.getBean(f.getType());
+                    } catch (Exception ignored) {
+                    }
+                }
+            }
             if (valeur == null) continue;
 
             try {
